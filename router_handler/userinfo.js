@@ -1,6 +1,7 @@
 //获取用户信息路由处理函数
 //导入数据库操作模块
 const db = require("../db/index");
+const bcrypt = require("bcryptjs"); //导入模块将用户输入的密码进行加密和数据库中的比较
 
 //1.获取用户信息
 exports.getUserInfo = (req, res) => {
@@ -39,6 +40,46 @@ exports.updataUserInfo = (req, res) => {
             return res.crs("修改用户信息失败");
         //如果修改用户信息成功
         return res.crs("修改用户信息成功", 0);
+
+    })
+}
+
+//3.重置密码的路由处理函数
+//思路：根据id判断是否有该用户，如果有的话再判断输入的旧密码是否和数据库里面的一致，如果一致再修改数据库里面的密码
+exports.updatePassword = (req, res) => {
+    //3.1先查询id是否存在
+    const sqlStr = `select * from ev_users where id=?`;
+    //3.2执行查询语句
+    db.query(sqlStr, req.user.id, (err, results) => {
+        if (err)
+            return res.crs(err);
+        if (results.length !== 1)
+            return res.crs("用户不存在");
+        console.log(results);
+        //判断提交的旧密码是否正确
+        //返回一个布尔值，如果相同就返回true，如果不相同就返回false
+        const compareResults = bcrypt.compareSync(req.body.oldPwd, results[0].password);
+        if (!compareResults)
+            return res.crs("原密码错误！");
+
+
+        //如果oldPwd和数据库中的一致，就更新密码
+        const sql = "update ev_users set password=? where id=?";
+        //对新密码进行加密
+        const newPwd = bcrypt.hashSync(req.body.newPwd, 10);
+        //执行sql语句，根据id来更新用户的密码
+        db.query(sql, [newPwd, req.user.id], (err, results) => {
+            //sql语句执行失败
+            if (err) {
+                return res.crs(err)
+            };
+            if (results.affectedRows !== 1) {
+                return res.crs("用户密码修改失败")
+            };
+            res.crs("修改密码成功", 0);
+        })
+
+
 
     })
 }

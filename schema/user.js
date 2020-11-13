@@ -36,4 +36,15 @@ exports.updata_userinfo_schema = {
         nickname,
         email
     }
+};
+//修改用户密码的验证对象
+exports.updata_password_schema = {
+    body: {
+        //使用password这个规则，验证req.body.oldPwd的值
+        oldPwd: password,
+        // joi.ref("oldPwd")表示newPwd的值必须和oldPwd的值保持一致
+        //joi.not(joi.ref("oldPwd"))表示newPwd的值不能和oldPwd的值一致
+        //concat(password)表示将password的规则合并起来
+        newPwd: joi.not(joi.ref("oldPwd")).concat(password)
+    }
 }
