@@ -14,6 +14,10 @@ const { string, required } = require("@hapi/joi");
 const username = joi.string().alphanum().min(1).max(10).required();
 //密码的验证规则:必须为字符串，非空格的6到12位，必填
 const password = joi.string().pattern(/^[\S]{6,12}$/).required();
+//用户id的检测
+const id = joi.number().integer().min(1).required();
+//用户昵称的验证
+const email = joi.string().email().required();
 
 //注册和登录表单的验证规则对象
 exports.reg_login_schema = {
@@ -21,5 +25,13 @@ exports.reg_login_schema = {
     body: {
         username,
         password
+    }
+};
+//更新用户信息的验证对象
+exports.updata_userinfo_schema = {
+    body: {
+        id,
+        nickname,
+        email
     }
 }

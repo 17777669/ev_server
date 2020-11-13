@@ -1,10 +1,12 @@
 //项目 的入口文件
 //导入express模块
 const express = require("express");
-//导入用户相关的路由
-const userRouter = require("./router/user");
 //创建app的服务器实例
 const app = express();
+//导入用户相关的路由
+const userRouter = require("./router/user");
+//导入获取用户信息的路由
+const userInfoRouter = require("./router/userinfo");
 
 
 
@@ -41,7 +43,7 @@ app.use(function(req, res, next) {
 const config = require("./config");
 //该中间件的作用是验证指明http请求的JsonWebTokens的有效性，如果有效就将token的值设置到req.user里面，然后路由到相应的router
 const expressJWT = require("express-jwt");
-//使用unless指明哪些中间件是不需要进行token的身份认证，
+//使用unless指明哪些请求是不需要进行token的身份认证，
 app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] }));
 //-----------------------------------中间件end----------------------
 
@@ -52,8 +54,10 @@ app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] 
 
 //-----------------------------------路由start---------------------------
 
-//1.用户注册登录的路由
+//1.用户注册登录的路由,以api开头的请求是不需要验证的
 app.use("/api", userRouter);
+//2.获取用户信息的路由
+app.use("/my", userInfoRouter);
 
 
 
