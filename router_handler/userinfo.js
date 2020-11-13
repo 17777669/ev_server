@@ -23,3 +23,22 @@ exports.getUserInfo = (req, res) => {
         })
     })
 }
+
+//2.修改用户的基本信息
+exports.updataUserInfo = (req, res) => {
+    //创建执行的sql语句
+    const sql = "update ev_users set ? where id=?"
+    db.query(sql, [req.body, req.body.id], (err, results) => {
+        console.log(results);
+        //如果执行SQL语句失败
+        if (err)
+            return res.crs(err);
+
+        //进行修改，添加，删除的时候，可以使用results.affectedRows（受影响的行数）来判断是否修改成功
+        if (results.affectedRows !== 1)
+            return res.crs("修改用户信息失败");
+        //如果修改用户信息成功
+        return res.crs("修改用户信息成功", 0);
+
+    })
+}

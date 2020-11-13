@@ -16,10 +16,12 @@ const username = joi.string().alphanum().min(1).max(10).required();
 const password = joi.string().pattern(/^[\S]{6,12}$/).required();
 //用户id的检测
 const id = joi.number().integer().min(1).required();
-//用户昵称的验证
+//用户昵称的验证,字符串，必填
+const nickname = joi.string().required();
+//用户邮箱的验证a
 const email = joi.string().email().required();
 
-//注册和登录表单的验证规则对象
+//注册和登录表单的验证规则对象a
 exports.reg_login_schema = {
     //表示对req.body中 的数据进行验证
     body: {
