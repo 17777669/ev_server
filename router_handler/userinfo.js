@@ -78,8 +78,22 @@ exports.updatePassword = (req, res) => {
             };
             res.crs("修改密码成功", 0);
         })
+    })
+}
 
 
-
+//4.修改头像的路由处理函数
+exports.updateAvatar = (req, res) => {
+    //4.1定义更新用户头像的sql语句
+    const sql = "update ev_users set user_pic=? where id=?";
+    //4.2执行sql语句
+    db.query(sql, [req.body.avatar, req.user.id], (err, results) => {
+        //执行sql语句失败
+        if (err) {
+            return res.crs(err);
+        }
+        if (results.affectedRows !== 1)
+            return res.crs("用户头像更新失败");
+        res.crs("用户头像更新成功", 0);
     })
 }

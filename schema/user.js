@@ -20,6 +20,10 @@ const id = joi.number().integer().min(1).required();
 const nickname = joi.string().required();
 //用户邮箱的验证a
 const email = joi.string().email().required();
+//用户头像的验证规程对象
+//dataUri()：指的是如下的字符串
+//data:image/png;base64
+const avatar = joi.string().dataUri().required();
 
 //注册和登录表单的验证规则对象a
 exports.reg_login_schema = {
@@ -46,5 +50,11 @@ exports.updata_password_schema = {
         //joi.not(joi.ref("oldPwd"))表示newPwd的值不能和oldPwd的值一致
         //concat(password)表示将password的规则合并起来
         newPwd: joi.not(joi.ref("oldPwd")).concat(password)
+    }
+};
+//导出头像验证规则对象
+exports.update_avatar_schema = {
+    body: {
+        avatar,
     }
 }

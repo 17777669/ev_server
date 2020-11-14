@@ -8,7 +8,7 @@ const userinfo_handler = require("../router_handler/userinfo");
 //6.导入自动验证数据合法性的中间件
 const expressJoi = require("@escook/express-joi");
 //7.导入需要验证规则对象，来自@hapi/joi
-const { updata_userinfo_schema, updata_password_schema } = require("../schema/user");
+const { updata_userinfo_schema, updata_password_schema, update_avatar_schema } = require("../schema/user");
 
 
 //4.获取用户的基本信息
@@ -20,6 +20,8 @@ router.post("/userinfo", expressJoi(updata_userinfo_schema), userinfo_handler.up
 //9.添加重置密码的路由
 router.post("/updatepwd", expressJoi(updata_password_schema), userinfo_handler.updatePassword);
 
+//10.添加修改头像的路由
+router.post("/update/avatar", expressJoi(update_avatar_schema), userinfo_handler.updateAvatar);
 
 //5.向外导出路由对象
 module.exports = router;
