@@ -1,4 +1,5 @@
 //导入数据库
+const { required } = require("@hapi/joi");
 const db = require("../db/index");
 
 
@@ -65,7 +66,7 @@ exports.deleteCateById = (req, res) => {
     //创建sql语句,执行删除，其实是将is_delete标志的值更新为1,表示已经删除了
     const sql = `update ev_article_cate set is_delete=1 where id=?`;
     //执行删除语句
-    db.query(sql, req.body.id, (err, results) => {
+    db.query(sql, req.params.id, (err, results) => {
         if (err) {
             return res.crs(err)
         };
@@ -78,4 +79,22 @@ exports.deleteCateById = (req, res) => {
         })
     })
 
+}
+
+//4.根据id获取文章分类信息
+exports.getArtCateById = (req, res) => {
+    //创建sql语句
+    const sql = `select * from ev_article_cate where id=?`;
+    //执行sql语句
+    db.query(sql, req.params.id, (err, results) => {
+        if (err)
+            return res.crs(err);
+        if (results.length !== 1)
+            return res.crs("查询失败");
+        res.send({
+            status: 0,
+            message: "数据查询成功",
+            data: results[0]
+        })
+    })
 }

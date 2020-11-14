@@ -12,10 +12,17 @@ exports.add_cate_schema = {
         name,
         alias
     }
-}
+};
+//导出根据id删除文章分类的校验规则
 exports.delete_cate_schema = {
-    //表示要检验req.body里面的数据
-    body: {
+    //表示要检验req.params里面的数据
+    params: {
+        id
+    }
+};
+//导出根据id获取文章分类信息的校验规程
+exports.get_cate_schema = {
+    params: {
         id
     }
 }
