@@ -98,3 +98,37 @@ exports.getArtCateById = (req, res) => {
         })
     })
 }
+
+
+//5.根据id来更新文章分类信息
+//思路:查询要修改后的数据（name,alias)是否和数据库中id不同的分类一样，如果一样就返回一个提示信息，如果没有就再执行查询语句将指定id的分类信息更改
+exports.updateCateById = (req, res) => {
+    const data = req.body;
+    const sqlStr = `select * from ev_article_cate where id<>? and (name=? or alias=?)`;
+    db.query(sqlStr, [data.Id, data.name, data.alias], (err, results) => {
+        if (err)
+            return res.crs(err);
+        //判断输入的内容是否和数据库中的一致
+        if (results.length === 2)
+            return res.crs("分类名称和分类别名已经被占用");
+        if (results.length === 1 && results[0].name === data.name && results[0].alias === data.alias)
+            return res.crs("分类名称和分类别名已经被占用");
+        if (results.length === 1 && results[0].name === data.name)
+            return res.crs("分类名称已经被占用");
+        if (results.length === 1 && results[0].alias === data.alias)
+            return res.crs("分类别名已经被占用");
+        //如果名称没有被占用，就执行更新操作
+        const sql = `update ev_article_cate set ? where id=?`;
+        db.query(sql, [data, data.Id], (err, results) => {
+
+            if (err)
+                return res.crs(err);
+            if (results.affectedRows !== 1)
+                return res.crs("数据更新失败");
+            res.send({
+                status: 0,
+                message: "数据更新成功"
+            })
+        })
+    })
+}

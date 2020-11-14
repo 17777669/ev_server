@@ -25,4 +25,12 @@ exports.get_cate_schema = {
     params: {
         id
     }
+};
+//根据文章id来更新文章分类信息的校验规则
+exports.update_cate_schema = {
+    body: {
+        Id: id,
+        name,
+        alias
+    }
 }
