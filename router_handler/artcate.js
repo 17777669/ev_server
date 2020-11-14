@@ -58,3 +58,24 @@ exports.addArticleCates = (req, res) => {
         })
     })
 }
+
+
+//3.根据id删除文章分类
+exports.deleteCateById = (req, res) => {
+    //创建sql语句,执行删除，其实是将is_delete标志的值更新为1,表示已经删除了
+    const sql = `update ev_article_cate set is_delete=1 where id=?`;
+    //执行删除语句
+    db.query(sql, req.body.id, (err, results) => {
+        if (err) {
+            return res.crs(err)
+        };
+        if (results.affectedRows !== 1) {
+            return res.crs("删除分类失败")
+        };
+        res.send({
+            status: 0,
+            message: "分类删除成功"
+        })
+    })
+
+}
