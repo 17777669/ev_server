@@ -5,10 +5,10 @@ const bcrypt = require("bcryptjs"); //导入模块将用户输入的密码进行
 
 //1.获取用户信息
 exports.getUserInfo = (req, res) => {
-    // console.log(req.user);
+    //req.user里面也保存了用户的部分信息，但是不全，所以重新在数据库里面再查询一次
     //定义sql语句，根据用户的id来查询用户的信息,为了安全，排除用户的密码
     const sql = `select id,username,nickname,email,user_pic from ev_users where id=?`;
-    //执行sql语句
+    //执行sql语句,第二个参数是sql里面 的占位符的参数值，只有一个可以直接写，如果多个的话就可以使用数组来传递
     db.query(sql, req.user.id, (err, results) => {
         //执行sql语句出错的话
         if (err)
@@ -34,7 +34,6 @@ exports.updataUserInfo = (req, res) => {
         //如果执行SQL语句失败
         if (err)
             return res.crs(err);
-
         //进行修改，添加，删除的时候，可以使用results.affectedRows（受影响的行数）来判断是否修改成功
         if (results.affectedRows !== 1)
             return res.crs("修改用户信息失败");

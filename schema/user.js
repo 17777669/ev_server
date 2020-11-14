@@ -1,7 +1,6 @@
 //用户输入的信息的验证
 //导入模块
 const joi = require("@hapi/joi"); //该模块的作用是为表单中携带的每个数据项定义验证规则
-const { string, required } = require("@hapi/joi");
 // string(): 必须是字符串
 // alphanum():值只能使包含a-zA-Z0-9的字符串
 // min(len): 最小的长度
@@ -29,6 +28,7 @@ const avatar = joi.string().dataUri().required();
 exports.reg_login_schema = {
     //表示对req.body中 的数据进行验证
     body: {
+        // 验证req.body里面 的username,password数据进行验证
         username,
         password
     }

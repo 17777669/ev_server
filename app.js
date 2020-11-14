@@ -7,6 +7,8 @@ const app = express();
 const userRouter = require("./router/user");
 //导入获取用户信息的路由
 const userInfoRouter = require("./router/userinfo");
+//文章分类管理的路由
+const artcateRouter = require("./router/artcate");
 
 
 
@@ -43,7 +45,7 @@ app.use(function(req, res, next) {
 const config = require("./config");
 //该中间件的作用是验证指明http请求的JsonWebTokens的有效性，如果有效就将token的值设置到req.user里面，然后路由到相应的router
 const expressJWT = require("express-jwt");
-//使用unless指明哪些请求是不需要进行token的身份认证，
+//使用unless指明哪些请求是不需要进行token的身份认证，如果是/api开始的请求就不需要进行tokne解析，其他的就需要token解析，
 app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] }));
 //-----------------------------------中间件end----------------------
 
@@ -58,6 +60,8 @@ app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] 
 app.use("/api", userRouter);
 //2.获取用户信息的路由
 app.use("/my", userInfoRouter);
+//3.文章分类管理的路由
+app.use("/my/acticle", artcateRouter);
 
 
 
@@ -65,9 +69,9 @@ app.use("/my", userInfoRouter);
 
 
 
-//-----------------------------------错误中间件start----------------------
+//-----------------------------------全局错误中间件start：错误中间件必须写在所有的路由后面----------------------
 //1. 在此处注册一个全局的错误中间件，用来捕获验证失败的错误，并将验证失败的结果响应给客户端
-const joi = require("@hapi/joi");
+const joi = require("@hapi/joi"); //需要使用@hapi/joi模块的ValidationError
 app.use(function(err, req, res, next) {
     //输入数据验证失败的话
     if (err instanceof joi.ValidationError)

@@ -99,17 +99,18 @@ exports.login = (req, res) => {
             return res.crs("登录失败，密码错误！")
         }
         //如果登录成功的话就生成Token的字符串
-        // 注意：生成了token的时候一定要剔除密码和头像的值,如果用户自定义的属性，放在扩展运算符后面，则扩展运算符内部的同名属性会被覆盖掉。
+        // 注意：生成了token的时候一定要剔除密码和头像的值,剔除密码是为了防止其他人解析token获取到了密码的值
+        //如果用户自定义的属性，放在扩展运算符后面，则扩展运算符内部的同名属性会被覆盖掉。
         const user = {...results[0], password: "", user_pic: "" };
-        //将用户信息生成token字符串,有效期位10小时
+        //将用户信息生成token字符串,有效期为10小时
         const tokenStr = jwt.sign(user, config.jwtSecretKey, { expiresIn: "10h" });
         // console.log(tokenStr);
         //将登录成功后用户的信息返回给用户
         res.send({
             status: 0,
             message: "登录成功",
-            //为了方便客户端使用token，在服务器直接拼上Bearer
-            token: "Bearer" + tokenStr
+            //为了方便客户端使用token，在服务器直接拼上Bearer，注意后面的空格
+            token: "Bearer " + tokenStr
         })
     })
 };
